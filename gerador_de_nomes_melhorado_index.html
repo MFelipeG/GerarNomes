@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Nomes Criativos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+        }
+        button, select {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        select {
+            background-color: #ddd;
+        }
+        .resultado {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+            padding: 10px;
+            background: #eee;
+            border-radius: 5px;
+            min-height: 30px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .letra {
+            display: inline-block;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: aparecer 0.05s forwards;
+        }
+        @keyframes aparecer {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .slide {
+            animation: deslizar 0.5s ease-out;
+        }
+        @keyframes deslizar {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gerador de Nomes Criativos</h1>
+    
+    <h2>Escolha uma categoria:</h2>
+    <button onclick="gerarNome('brasileiros')">Nome Brasileiro</button>
+    <button onclick="gerarNome('portugueses')">Nome Português</button>
+    <button onclick="gerarNome('ingleses')">Nome Inglês</button>
+    <button onclick="gerarNome('eua')">Nome EUA</button>
+    
+    <button onclick="gerarNomeCompleto()">Gerar Nome Completo</button>
+
+    <h3>Escolher sobrenome:</h3>
+    <select id="tipoSobrenome">
+        <option value="comum">Comum</option>
+        <option value="raro">Raro</option>
+    </select>
+    <button onclick="gerarSobrenome()">Adicionar Sobrenome</button>
+
+    <h2>Gerador de Nomes para Empresas</h2>
+    <label for="nicho">Escolha o nicho:</label>
+    <select id="nicho">
+        <option value="Tecnologia">Tecnologia</option>
+        <option value="Alimentação">Alimentação</option>
+        <option value="Moda">Moda</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Educação">Educação</option>
+    </select>
+    <button onclick="gerarNomeEmpresa()">Gerar Nome</button>
+
+    <div id="resultado" class="resultado"></div>
+    <button onclick="salvarNome()">Salvar Nome</button>
+    
+    <h2>Nomes Salvos:</h2>
+    <div id="nomesSalvos" class="resultado"></div>
+</div>
+
+<script>
+    const nomes = {
+        'brasileiros': ["João", "Maria", "Pedro", "Ana", "Carlos"],
+        'portugueses': ["Manuel", "Beatriz", "Antônio", "Margarida", "José"],
+        'ingleses': ["James", "Emily", "William", "Olivia", "Michael"],
+        'eua': ["John", "Emma", "Robert", "Ava", "Thomas"],
+        'empresas': {
+            "Tecnologia": ["TechNova", "InnoSoft", "ByteWorks", "CyberNet"],
+            "Alimentação": ["SaborCaseiro", "Delícia Express", "Chef Criativo"],
+            "Moda": ["FashionElite", "StylePoint", "TrendyWear"],
+            "Saúde": ["VidaFit", "Bem-Estar Clinic", "Saúde Total"],
+            "Educação": ["EduFuturo", "Aprender+ Escola", "Saber Mais"]
+        },
+        'sobrenomes': {
+            'comum': ["Silva", "Santos", "Oliveira", "Souza", "Lima"],
+            'raro': ["Montenegro", "Bragança", "Xavier", "Furtado", "Lobato"]
+        }
+    };
+
+    let nomeAtual = "";
+
+    function gerarNome(tipo) {
+        let lista = nomes[tipo];
+        nomeAtual = lista[Math.floor(Math.random() * lista.length)];
+        exibirNomeAnimado(nomeAtual);
+    }
+
+    function gerarSobrenome() {
+        if (!nomeAtual) {
+            document.getElementById("resultado").innerText = "Primeiro gere um nome.";
+            return;
+        }
+        let tipo = document.getElementById("tipoSobrenome").value;
+        let lista = nomes['sobrenomes'][tipo];
+        let sobrenomeGerado = lista[Math.floor(Math.random() * lista.length)];
+        exibirNomeAnimado(nomeAtual + " " + sobrenomeGerado);
+    }
+
+    function gerarNomeCompleto() {
+        let tipos = ['brasileiros', 'portugueses', 'ingleses', 'eua'];
+        let tipo = tipos[Math.floor(Math.random() * tipos.length)];
+        let nome = nomes[tipo][Math.floor(Math.random() * nomes[tipo].length)];
+        let sobrenome = nomes['sobrenomes']['comum'][Math.floor(Math.random() * nomes['sobrenomes']['comum'].length)];
+        exibirNomeAnimado(nome + " " + sobrenome);
+    }
+
+    function gerarNomeEmpresa() {
+        let nicho = document.getElementById("nicho").value;
+        let lista = nomes['empresas'][nicho] || [];
+        let nomeGerado = lista.length > 0 ? lista[Math.floor(Math.random() * lista.length)] : "Nenhum nome encontrado";
+        exibirNomeAnimado(nomeGerado);
+    }
+
+    function salvarNome() {
+        let resultadoDiv = document.getElementById("resultado").innerText;
+        if (resultadoDiv && resultadoDiv !== "Primeiro gere um nome.") {
+            let nomesSalvos = document.getElementById("nomesSalvos");
+            let novoNome = document.createElement("div");
+            novoNome.innerText = resultadoDiv;
+            nomesSalvos.appendChild(novoNome);
+        }
+    }
+
+    function exibirNomeAnimado(texto) {
+        let resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.innerHTML = "";
+        resultadoDiv.classList.add("slide");
+        for (let i = 0; i < texto.length; i++) {
+            let span = document.createElement("span");
+            span.className = "letra";
+            span.style.animationDelay = (i * 0.05) + "s";
+            span.innerText = texto[i];
+            resultadoDiv.appendChild(span);
+        }
+    }
+</script>
+
+</body>
+</html>
